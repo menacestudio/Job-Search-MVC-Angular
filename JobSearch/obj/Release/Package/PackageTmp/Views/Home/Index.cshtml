@@ -1,0 +1,85 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+
+<div data-ng-controller="JobsCtrl" class="row">
+    <div class="col-xs-12 col-sm-9">
+        <div class="jumbotron">
+            <h1>Search jobs in your area</h1>
+            <p class="lead">The search will scour the top job sites such as Monster, Indeed, Google base, CareerBuilder and SimplyHired. All in one place.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <form class="form-inline" id="jobsSearchFrm" name="jobsSearchFrm" role="form" data-ng-submit="searchJobs()" novalidate>
+                    <div class="alert alert-danger" data-ng-show="jobsSearchFrm.jobtitle.$invalid || jobsSearchFrm.zipcode.$invalid">
+                        <strong>Required fields are missing!</strong> The job title and zip code are both required.
+                    </div>
+                    <div class="form-group">
+                        <label for="jobtitle" class="col-sm-4 control-label">Job Title:</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="jobtitle" name="jobtitle" placeholder="Job Title" data-ng-model="search.jobtitle" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="jobtitle" class="col-sm-4 control-label">Zip Code:</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="zipcode" name="zipcode" placeholder="Zip Code" data-ng-model="search.zipcode" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Search for jobs" class="btn btn-success" />
+                    </div>
+                </form>
+            </div>
+        </div>
+        <hr />
+
+        <div class="row" data-ng-show="isAjaxRequest">
+            <div class="col-md-12">
+                <div class="progress progress-striped active">
+                    <div class="progress-bar progress-bar-info" role="progressbar" style="width: 100%">
+                        <span class="sr-only">Loading jobs...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" data-ng-show="jobs.length>0">
+            <div class="col-md-12">
+                <h3 data-ng-show="jobs">Search Results, found {{ jobs.length }}</h3>
+                <div data-ng-repeat="job in jobs">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                                <a href="{{ job.link }}" target="_blank">
+                                    <span class="glyphicon glyphicon-link"></span>
+                                    {{ job.title }}
+                                </a>
+                            </h3>
+                        </div>
+
+                        <div class="panel-body" data-ng-bind-html="job.description">
+
+                        </div>
+                        <div class="panel-footer">Posted on: {{ job.item.Date | date:'short' }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div role="navigation" id="sidebar" class="col-xs-6 col-sm-3">
+        <h4>Top Searches</h4>
+        <div class="list-group">
+            <a class="list-group-item" data-ng-repeat="s in searches" href="#" data-ng-click="setSearchCriteria(s)" data-ng-show="s.jobtitle">{{ s.jobtitle }} in {{ s.zipcode }}</a>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    @Scripts.Render("~/Scripts/app/jobsfactory.js")
+    @Scripts.Render("~/Scripts/app/jobscontroller.js")
+}
